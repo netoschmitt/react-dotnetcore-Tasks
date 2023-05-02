@@ -2,23 +2,33 @@ import {useState, useEffect} from 'react';
 import './App.css';
 import AtividadeForm from './components/AtividadeForm';
 import AtividadeLista from './components/AtividadeLista';
+import api from './api/atividade'
 
 
 function App() {
-  const [index, setIndex] = useState(0);
   const [atividades, setAtividades] = useState([]);
   const [atividade, setAtividade] = useState({id:0});
 
-  useEffect(() => {
-    atividades.length <= 0 ? setIndex(1) : 
-    setIndex(Math.max.apply(Math, atividades.map(item => item.id)) + 1,)
-  }, [atividades]);
+  
+    const pegaTodasAtividades = async () => {
+      const response = await api.get('atividade');
+      return response.data;
+    }
 
-  function addAtividade(ativ) {
-    // criando um array -> coloca todos em atividades -> ... new obj
-    setAtividades([...atividades,
-         {...ativ, id: index }]
-    );
+
+  useEffect(() => { 
+    const getAtividades = async () => {
+      const todasAtividades = await pegaTodasAtividades();
+      if (todasAtividades) setAtividades(todasAtividades);
+    };
+    getAtividades();
+   }, []);
+
+
+  const addAtividade = async (ativ) => {
+      const response = await api.post('atividade', ativ);
+      console.log(response.data);
+      setAtividades([...atividades, response.data]);
   }
 
   function cancelarAtividade(){
@@ -26,14 +36,24 @@ function App() {
   }
 
   // para cada item em atid.. se for = substitui ativ, senao mantem
-  function atualizarAtividade(ativ) {
-    setAtividades(atividades.map(item => item.id === ativ.id ? ativ : item));
+  const atualizarAtividade = async (ativ) => {
+    const response = await api.put(`atividade/${ativ.id}`, ativ);
+    const { id } = response.data;
+    setAtividades(
+      atividades.map((item) => (item.id === id ? response.data : item))
+      );
     setAtividade({id: 0})
   }
 
-  function deletarAtividade(id){
-    const atividadesFiltradas = atividades.filter(atividade => atividade.id !== id);
-    setAtividades([...atividadesFiltradas])
+  // deletar atividade
+  const deletarAtividade = async (id) => {
+    if (await api.delete(`atividade/${id}`))
+    {
+      const atividadesFiltradas = atividades.filter(
+        atividade => atividade.id !== id
+        );
+      setAtividades([...atividadesFiltradas]);
+    }
   }
 
   function pegarAtividade(id){
