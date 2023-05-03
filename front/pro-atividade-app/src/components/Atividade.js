@@ -27,7 +27,8 @@ export default function Atividades(props) {
   }
 
 
-  return ( <div className={"card mb-2 shadow border-" + prioridadeStyleIcon(props.ativ.prioridade)}  >
+  return ( 
+  <div className={"card mb-2 shadow border-" + prioridadeStyleIcon(props.ativ.prioridade)}  >
     <div className="card-body">
       <div className='d-flex justify-content-between'>
         <h5 className='card-title'>
@@ -43,15 +44,17 @@ export default function Atividades(props) {
         </h6>
       </div>
       <p className='card-text'> {props.ativ.descricao}</p>
-      <div className='d-flex justify-content-end pt-2 m-0 border-top'
-            onClick={() => props.pegarAtividade(props.ativ.id)}>
-        <button className='btn btn-outline-primary me-2 btn-sm'>
+      <div className='d-flex justify-content-end pt-2 m-0 border-top'>
+            
+        <button 
+          className='btn btn-outline-primary me-2 btn-sm'
+          onClick={() => props.pegarAtividade(props.ativ.id)}>
           <i className='fas fa-pen me-2'></i>
           Editar
         </button>
         <button 
             className='btn btn-outline-danger btn-sm' 
-            onClick={() => props.deletarAtividade(props.ativ.id)}>
+            onClick={() => props.handleConfirmModal(props.ativ.id)}>
             <i className='fas fa-trash me-2'></i>
           Deletar
         </button>

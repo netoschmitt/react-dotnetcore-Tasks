@@ -94,3 +94,8 @@ criando folder src/components
 
 
 - npm install --save axios
+
+https://react-bootstrap.github.io/getting-started/introduction
+
+- npm install react-bootstrap@next bootstrap@5.1.1
+
