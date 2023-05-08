@@ -7,7 +7,6 @@ const atividadeInicial = {
   descricao: ''
 }
 
-
 export default function AtividadeForm(props) {
   const[atividade,setAtividade] = useState(atividadeAtual())
 
