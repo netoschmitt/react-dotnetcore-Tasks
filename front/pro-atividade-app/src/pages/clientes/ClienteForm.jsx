@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import TitlePage from '../../components/TitlePage';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ClienteForm = () => {
-    let history = useHistory();
+    let navigate = useNavigate();
     let { id } = useParams();
 
     return (
@@ -12,7 +12,7 @@ const ClienteForm = () => {
             <TitlePage title={'Cliente detalhes ' + (id !== undefined ? id : '')}>
                 <Button 
                         variant='outline-secondary' 
-                        onClick={() => history.push('/cliente/lista')}>
+                        onClick={() => navigate('/cliente/lista')}>
                         <i className='fas fa-undo me-3'></i> Voltar
                 </Button>
             </TitlePage>
