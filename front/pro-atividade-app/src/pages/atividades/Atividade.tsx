@@ -4,27 +4,34 @@ import AtividadeForm from './AtividadeForm';
 import AtividadeLista from './AtividadeLista';
 import api from '../../api/atividade';
 import TitlePage from '../../components/TitlePage';
+import { IAtividade, Prioridade } from '../../model/atividade';
 
+const atividadeInicial : IAtividade = {
+  id: 0,
+  titulo: '',
+  prioridade: Prioridade.NaoDefinido,
+  descricao: ''
+};
 
-
-export default function Atividade() {
+const Atividade = () => {
   const [showAtividadeModal, setShowAtividadeModal] = useState(false);
   const [smShowConfirmModal, setSmShowConfirmModal] = useState(false);
 
-  const [atividades, setAtividades] = useState([]);
-  const [atividade, setAtividade] = useState({id:0});
+  const [atividades, setAtividades] = useState<IAtividade[]>([]);
+  const [atividade, setAtividade] = useState<IAtividade>(atividadeInicial);
   
     const handleAtividadeModal = () =>
       setShowAtividadeModal(!showAtividadeModal);
 
-    const handleConfirmModal = (id) => 
-    {
+    const handleConfirmModal = (id?: number) => {
       if (id !== 0 && id !== undefined){
-          const atividade = atividades.filter(atividade => atividade.id === id);
-          setAtividade(atividade[0]);
+          const atividade = atividades.filter(
+            atividade => atividade.id === id
+            );
+            setAtividade(atividade[0]);
       }
       else {
-        setAtividade({ id:0 })
+        setAtividade(atividadeInicial)
       }
       setSmShowConfirmModal(!smShowConfirmModal);
     }
@@ -32,7 +39,7 @@ export default function Atividade() {
     const pegaTodasAtividades = async () => {
       const response = await api.get('atividade');
       return response.data;
-    }
+    };
 
 
   useEffect(() => { 
@@ -44,7 +51,7 @@ export default function Atividade() {
    }, []);
 
 
-  const addAtividade = async (ativ) => {
+  const addAtividade = async (ativ: IAtividade) => {
       const response = await api.post('atividade', ativ);
       console.log(response.data);
       setAtividades([...atividades, response.data]);
@@ -52,27 +59,26 @@ export default function Atividade() {
   }
 
   const novaAtividade = () => {
-    setAtividade({ id: 0 });
+    setAtividade(atividadeInicial);
     handleAtividadeModal();
   }
 
   const cancelarAtividade = () => {
-    setAtividade({id: 0});
+    setAtividade(atividadeInicial);
     handleAtividadeModal();
   }
 
-  // para cada item em atid.. se for = substitui ativ, senao mantem
-  const atualizarAtividade = async (ativ) => {
+  const atualizarAtividade = async (ativ: IAtividade) => {
     const response = await api.put(`atividade/${ativ.id}`, ativ);
     const { id } = response.data;
     setAtividades(
       atividades.map((item) => (item.id === id ? response.data : item))
       );
-    setAtividade({id: 0});
+    setAtividade(atividadeInicial);
     handleAtividadeModal();
   }
 
-  const deletarAtividade = async (id) => {
+  const deletarAtividade = async (id: number) => {
     handleConfirmModal(0);
     if (await api.delete(`atividade/${id}`))
     {
@@ -83,7 +89,7 @@ export default function Atividade() {
     }
   }
 
-  const pegarAtividade = (id) => {
+  const pegarAtividade = (id: number) => {
     const atividade = atividades.filter(atividade => atividade.id === id);
     setAtividade(atividade[0]);
     handleAtividadeModal();
@@ -94,9 +100,7 @@ export default function Atividade() {
         <TitlePage
             title={'Atividade' + (atividade.id !== 0 ? atividade.id : '')}
             >
-            <Button
-              variant="outline-primary"
-              onClick={novaAtividade}>
+            <Button variant="outline-primary" onClick={novaAtividade}>
               <i className='fas fa-plus' />
             </Button>
         </TitlePage>
@@ -106,6 +110,7 @@ export default function Atividade() {
           pegarAtividade={pegarAtividade}
           handleConfirmModal={handleConfirmModal}
         />
+        
         <Modal show={showAtividadeModal} onHide={handleAtividadeModal}>
           <Modal.Header closeButton>
               <Modal.Title>
@@ -118,12 +123,14 @@ export default function Atividade() {
                     cancelarAtividade={cancelarAtividade}
                     atualizarAtividade={atualizarAtividade}
                     ativSelecionada={atividade}
-                    atividades={atividades}
                 />
               </Modal.Body>
         </Modal>
 
-        <Modal  show={smShowConfirmModal} onHide={handleConfirmModal}>
+        <Modal size='sm' 
+          show={smShowConfirmModal} 
+          onHide={handleConfirmModal}>
+
           <Modal.Header closeButton>
               <Modal.Title>
                 Excluindo Atividade {atividade.id !== 0 ? atividade.id : ' '}
@@ -149,4 +156,5 @@ export default function Atividade() {
   );
 }
 
+export default Atividade;
 

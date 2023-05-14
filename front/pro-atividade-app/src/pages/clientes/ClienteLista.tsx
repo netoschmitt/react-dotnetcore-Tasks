@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React , { useState } from 'react';
 import TitlePage from '../../components/TitlePage';
 import { Button, FormControl, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -32,7 +32,7 @@ const ClienteLista = () => {
     const navigate = useNavigate();
     const [termoBusca, setTermoBusca] = useState('')
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTermoBusca(e.target.value);
     };
 
